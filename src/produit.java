@@ -1,12 +1,10 @@
-/**
- * Classe représentant un produit dans le système.
- * Chaque produit possède un nom, un état (en cours ou terminé),
- * ainsi qu'une liste des compétences nécessaires à sa fabrication.
- */
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
-
+/**
+ * Classe représentant un produit à fabriquer.
+ * Chaque produit a un nom et une liste de compétences nécessaires à sa fabrication.
+ */
 public class produit implements Serializable {
 
     /**
@@ -130,3 +128,4 @@ public class produit implements Serializable {
         this.skills.put(skill, true);
     }
 }
+

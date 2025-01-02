@@ -13,35 +13,48 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class robot extends Agent {
+/**
+ * Classe représentant un agent robot.
+ * Les robots possèdent des compétences et traitent des produits envoyés par l'atelier.
+ */
 
-    private HashMap<String, Float> competences; // Ensemble des compétences avec leur niveau associé
-    private List<produit> produits; // Liste des produits en attente de traitement
-    private double time; // Temps nécessaire pour exécuter une compétence
+public class robot extends Agent {
+    /** Ensemble des compétences avec leur niveau associé. */
+    private HashMap<String, Float> competences; 
+
+    /** Liste des produits en attente de traitement. */
+    private List<produit> produits; 
+    
+    /** Temps nécessaire pour exécuter une compétence. */
+    private double time; 
 
     /**
-     * Accède aux compétences du robot
+     * Retourne l'ensemble des compétences du robot.
+     * @return Un dictionnaire contenant les compétences et leur niveau associé.
      */
     public HashMap<String, Float> getCompetences() {
         return competences;
     }
 
     /**
-     * Définit les compétences du robot
+     * Définit les compétences du robot.
+     * @param competences Un dictionnaire contenant les compétences et leur niveau associé.
      */
     public void setCompetences(HashMap<String, Float> competences) {
         this.competences = competences;
     }
 
     /**
-     * Accède à la liste des produits du robot
+     * Retourne la liste des produits en attente de traitement par le robot.
+     * @return Une liste de produits.
      */
     public List<produit> getProduits() {
         return produits;
     }
 
     /**
-     * Définit la liste des produits pour le robot
+     * Définit la liste des produits à traiter par le robot.
+     * @param produits Une liste de produits.
      */
     public void setProduits(List<produit> produits) {
         this.produits = produits;
@@ -84,7 +97,7 @@ public class robot extends Agent {
         }
 
         // Ajout des comportements de l'agent
-        this.addBehaviour(new receptionMessage());
+        this.addBehaviour(new acceptMessage());
         this.addBehaviour(new applySkills(this, 1000));
     }
 
@@ -137,7 +150,7 @@ public class robot extends Agent {
     /**
      * Comportement pour recevoir des messages d'autres agents
      */
-    private class receptionMessage extends CyclicBehaviour {
+    private class acceptMessage extends CyclicBehaviour {
         @Override
         public void action() {
             ACLMessage msg = receive();

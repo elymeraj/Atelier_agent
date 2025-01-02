@@ -11,6 +11,10 @@ import jade.lang.acl.ACLMessage;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Classe représentant l'atelier où les produits sont fabriqués et gérés.
+ * L'atelier interagit avec des agents robots pour distribuer les tâches et suivre l'état des produits.
+ */
 public class atelier extends Agent {
 
     /**
@@ -19,24 +23,24 @@ public class atelier extends Agent {
     private List<produit> produits;
 
     /**
-     * Liste des produits finis par l'atelier.
+     * Liste des produits terminés par l'atelier.
      */
-    private List<produit> finishedProduits;
+    private List<produit> endProducts;
 
     /**
-     * Liste des produits non finissables dans l'atelier.
+     * Liste des produits non réalisables dans l'atelier.
      */
-    private List<produit> trashProduits;
+    private List<produit> clearProducts;
 
     /**
-     * Nombre total de produits dans l'atelier.
+     * Nombre total de produits à traiter dans l'atelier.
      */
-    private int nbProduits;
+    private int totalProducts;
 
     /**
      * Dictionnaire contenant les scores des robots pour chaque produit.
      */
-    private HashMap<String, HashMap<String, Float>> agentScores;
+    private HashMap<String, HashMap<String, Float>> robotProductScores;
 
     /**
      * Méthode appelée lors de l'initialisation de l'agent.
@@ -59,25 +63,25 @@ public class atelier extends Agent {
         for (String productName : products.keySet()) {
             this.produits.add(new produit(productName, products.get(productName)));
         }
-        this.nbProduits = this.produits.size();
+        this.totalProducts = this.produits.size();
 
         // Initialisation des listes auxiliaires et des scores
-        this.finishedProduits = new ArrayList<>();
-        this.trashProduits = new ArrayList<>();
-        this.agentScores = new HashMap<>();
+        this.endProducts = new ArrayList<>();
+        this.clearProducts = new ArrayList<>();
+        this.robotProductScores = new HashMap<>();
 
         // Ajout des comportements
-        this.addBehaviour(new sendProduct(this, 100)); // Envoi des produits
-        this.addBehaviour(new receptionMessage(this)); // Réception des messages
+        this.addBehaviour(new dispatchProduct(this, 100)); // Envoi des produits aux robots
+        this.addBehaviour(new acceptMessage(this)); // Réception des messages des robots
     }
 
     /**
      * Classe interne pour gérer l'envoi des produits aux robots.
      */
-    private class sendProduct extends TickerBehaviour {
+    private class dispatchProduct extends TickerBehaviour {
         private Agent a;
 
-        public sendProduct(Agent a, long period) {
+        public dispatchProduct(Agent a, long period) {
             super(a, period);
             this.a = a;
         }
@@ -110,24 +114,24 @@ public class atelier extends Agent {
 
                 if (agentsScore.size() == 0) {
                     System.out.println("Aucun robot n'est capable de fabriquer le produit : " + p.getName());
-                    trashProduits.add(p);
+                    clearProducts.add(p);
                     produits.remove(p);
                 } else {
-                    agentScores.put(p.getName(), agentsScore);
-                    String sendAgent = "";
-                    float maxScore = 0.0f;
+                    robotProductScores.put(p.getName(), agentsScore);
+                    String assignedAgent = "";
+                    float topScore  = 0.0f;
                     for (String agent : agentsScore.keySet()) {
-                        if (agentsScore.get(agent) > maxScore) {
-                            maxScore = agentsScore.get(agent);
-                            sendAgent = agent;
+                        if (agentsScore.get(agent) > topScore ) {
+                            topScore  = agentsScore.get(agent);
+                            assignedAgent = agent;
                         }
                     }
-                    agentsScore.remove(sendAgent);
-                    agentScores.remove(sendAgent);
+                    agentsScore.remove(assignedAgent);
+                    robotProductScores.remove(assignedAgent);
                     produits.remove(p);
 
                     ACLMessage message = new ACLMessage(ACLMessage.INFORM);
-                    message.addReceiver(new AID(sendAgent, AID.ISLOCALNAME));
+                    message.addReceiver(new AID(assignedAgent, AID.ISLOCALNAME));
                     try {
                         message.setContentObject(p);
                     } catch (IOException e) {
@@ -136,15 +140,15 @@ public class atelier extends Agent {
                     this.a.send(message);
                 }
             } else {
-                if (finishedProduits.size() + trashProduits.size() == nbProduits) {
+                if (endProducts.size() + clearProducts.size() == totalProducts) {
                     System.out.println("Tous les produits ont été traités.");
                     System.out.println("Produits finis :");
-                    for (produit p : finishedProduits) {
+                    for (produit p : endProducts) {
                         System.out.println(p.getName());
                     }
-                    if (trashProduits.size() > 0) {
+                    if (clearProducts.size() > 0) {
                         System.out.println("Produits non réalisables :");
-                        for (produit p : trashProduits) {
+                        for (produit p : clearProducts) {
                             System.out.println(p.getName());
                         }
                     }
@@ -154,10 +158,13 @@ public class atelier extends Agent {
         }
     }
 
-    private class receptionMessage extends CyclicBehaviour {
+    /**
+     * Classe interne pour gérer la réception des messages des robots.
+     */
+    private class acceptMessage extends CyclicBehaviour {
         private Agent a;
 
-        public receptionMessage(Agent a) {
+        public acceptMessage(Agent a) {
             this.a = a;
         }
 
@@ -183,7 +190,7 @@ public class atelier extends Agent {
                     }
                     if (produit.isDone()) {
                         System.out.println("Le produit " + produit.getName() + " est terminé.");
-                        finishedProduits.add(produit);
+                        endProducts.add(produit);
                     } else {
                         System.out.println("Le produit " + produit.getName() + " n'est pas terminé.");
                         produits.add(produit);
@@ -193,6 +200,9 @@ public class atelier extends Agent {
         }
     }
 
+    /**
+     * Méthode appelée lors de la terminaison de l'agent.
+     */
     protected void takeDown() {
         System.out.println("Agent " + getAID().getName() + " terminating.");
     }

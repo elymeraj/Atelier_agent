@@ -1,51 +1,3 @@
-// import java.util.Scanner;
-// import jade.core.Runtime;
-// import jade.core.ProfileImpl;
-// import jade.wrapper.AgentController;
-// import jade.wrapper.ContainerController;
-
-// public class Main {
-//     public static void main(String[] args) {
-//         try {
-//             Scanner scanner = new Scanner(System.in);
-
-//             // Demander le nombre de robots
-//             System.out.print("Entrez le nombre de robots : ");
-//             int nbRobots = scanner.nextInt();
-//             scanner.nextLine(); // Consommer la ligne restante
-
-//             String[] robotNames = new String[nbRobots];
-
-//             // Demander les noms des robots
-//             for (int i = 0; i < nbRobots; i++) {
-//                 System.out.print("Entrez le nom du robot " + (i + 1) + " : ");
-//                 robotNames[i] = scanner.nextLine();
-//             }
-
-//             // Initialisation de la plateforme JADE
-//             Runtime runtime = Runtime.instance();
-//             ProfileImpl profile = new ProfileImpl();
-//             profile.setParameter("gui", "true");
-//             ContainerController mainContainer = runtime.createMainContainer(profile);
-
-//             // Lancer l'agent atelier
-//             AgentController atelier = mainContainer.createNewAgent("eva", "atelier", null);
-//             atelier.start();
-
-//             // Lancer les agents robots
-//             for (String robotName : robotNames) {
-//                 AgentController robot = mainContainer.createNewAgent(robotName, "robot", null);
-//                 robot.start();
-//             }
-
-//             System.out.println("Tous les agents sont démarrés !");
-//         } catch (Exception e) {
-//             e.printStackTrace();
-//         }
-//     }
-// }
-
-
 import java.util.Scanner;
 import jade.core.Runtime;
 import jade.core.ProfileImpl;
@@ -56,6 +8,13 @@ import jade.wrapper.ContainerController;
  * Classe principale pour démarrer le système multi-agents.
  */
 public class Main {
+
+    /**
+     * Point d'entrée principal de l'application multi-agents.
+     * Cette méthode initialise la plateforme JADE, l'atelier et les agents robots.
+     * 
+     * @param args Les arguments de ligne de commande (non utilisés).
+     */
     public static void main(String[] args) {
         try {
             Scanner scanner = new Scanner(System.in);
@@ -63,9 +22,9 @@ public class Main {
             /**
              * Message d'accueil et demande du nombre de robots.
              */
-            System.out.println("===============================");
+            System.out.println("================================================");
             System.out.println(" Bienvenue dans votre simulateur multi-agents !");
-            System.out.println("===============================");
+            System.out.println("================================================");
             System.out.print("Combien de robots souhaitez-vous créer ? : ");
             int nbRobots = scanner.nextInt();
             scanner.nextLine(); // Consommer la ligne restante
@@ -116,3 +75,4 @@ public class Main {
         }
     }
 }
+
