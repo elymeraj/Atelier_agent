@@ -1,53 +1,27 @@
-# Projet Multi-Agent 
-## M1 Informatique - Université de Caen
-### 2022 - 2023
-#### PRONOST Sacha 21901956
+# Devoir Maison - Système Multi-Agents
+### Auteur
+- ***Eldis YMERAJ***
+- `22408331`
+
 
 ## Description du projet
-Ce projet à pour but d'implémenter à l'aide de la bibliothèque JADE, un système multi-agent permettant de simuler un atelier de production.
+Implémentation d'un système multi-agent avec la bibliothèque JADE pour simuler un atelier de production.
 
-## Fichier de configuration
-Le fichier de configuration est un fichier texte contenant les informations suivantes :
-- Le temps de production d'un produit (qui fluctue en fonction du niveau de compétence des robots)
-- La liste des compétences que peuvent avoir les robots
-- La liste des produits que doit produire l'atelier
-
+## Structure du Projet
+- `src/` : Contient les fichiers source Java.
+- `lib/` : Bibliothèque JADE.
 ## Lancement du projet
-## Étapes : 
-- Nettoyer les anciens fichiers compilés et créer les répertoires nécessaires
-- Compiler toutes les classes Java
-- Générer la documentation Javadoc
-- Exécuter le programme principal
 ```bash
-rm -rf build doc
 mkdir build doc
 javac -cp ".:lib/jade.jar" -d build src/*.java
 javadoc -d doc -sourcepath src -classpath "lib/jade.jar" src/*.java
 java -cp ".:lib/jade.jar:build" Main
 ```
-
-
-# Conseils pour Nettoyer le Projet après Exécution
-
-Après avoir exécuté et fini la consultation de votre projet, voici les étapes pour le nettoyer et le laisser propre. Cela inclut la suppression des fichiers générés automatiquement pour réduire l'encombrement.
-
 ---
 
-# Nettoyer le Projet après Exécution
-
-Voici les commandes à exécuter pour nettoyer votre projet et le laisser dans un état propre après consultation ou utilisation.
-
----
-
-## Commandes de Nettoyage:
-
-1. **Supprimer les fichiers compilés et la documentation :**
-2. Supprimer les fichiers temporaires et autres fichiers générés par JADE
-Ces commandes permettent de supprimer les dossiers `build` et `doc`, qui contiennent respectivement les fichiers
-`.class` générés lors de la compilation et la documentation générée par `javadoc`.
+## Supprimer les fichiers compilés et la documentation 
 
 ```bash
    rm -rf build doc
    rm -f APDescription.txt MTPs-Main-Container.txt
-
 ```
