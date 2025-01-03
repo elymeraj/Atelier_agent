@@ -1,37 +1,38 @@
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
+
 /**
- * Classe représentant un produit à fabriquer.
- * Chaque produit a un nom et une liste de compétences nécessaires à sa fabrication.
+ * Classe représentant un véhicule à réparer dans un garage mécanique.
+ * Chaque véhicule a un nom et une liste de compétences nécessaires à sa réparation.
  */
 public class produit implements Serializable {
 
     /**
-     * Nom du produit.
+     * Nom du véhicule.
      */
     private String name;
 
     /**
-     * Indique si le produit est libre (non encore pris en charge).
+     * Indique si le véhicule est libre (non encore pris en charge).
      */
     private boolean free;
 
     /**
-     * Indique si le produit est terminé.
+     * Indique si le véhicule est entièrement réparé.
      */
     private boolean done;
 
     /**
-     * Liste des compétences nécessaires à la fabrication du produit, avec un statut pour chaque compétence.
+     * Liste des compétences nécessaires à la réparation du véhicule, avec un statut pour chaque compétence.
      * true signifie que la compétence a été réalisée.
      */
     private HashMap<String, Boolean> skills;
 
     /**
-     * Constructeur pour initialiser un produit avec un nom et une liste de compétences.
-     * @param name Le nom du produit.
-     * @param skills La liste des compétences nécessaires pour fabriquer le produit.
+     * Constructeur pour initialiser un véhicule avec un nom et une liste de compétences.
+     * @param name Le nom du véhicule.
+     * @param skills La liste des compétences nécessaires pour réparer le véhicule.
      */
     public produit(String name, List<String> skills) {
         this.name = name;
@@ -44,15 +45,15 @@ public class produit implements Serializable {
     }
 
     /**
-     * Retourne si le produit est libre (non pris en charge).
-     * @return true si le produit est libre, false sinon.
+     * Retourne si le véhicule est libre (non pris en charge).
+     * @return true si le véhicule est libre, false sinon.
      */
     public boolean isFree() {
         return free;
     }
 
     /**
-     * Met à jour le statut de libre du produit.
+     * Met à jour le statut de libre du véhicule.
      * @param free Nouveau statut de libre.
      */
     public void setFree(boolean free) {
@@ -61,8 +62,8 @@ public class produit implements Serializable {
 
     /**
      * Vérifie si toutes les compétences nécessaires ont été réalisées.
-     * Si c'est le cas, le produit est considéré comme terminé.
-     * @return true si le produit est terminé, false sinon.
+     * Si c'est le cas, le véhicule est considéré comme entièrement réparé.
+     * @return true si le véhicule est réparé, false sinon.
      */
     public boolean isDone() {
         for (String skill : skills.keySet()) {
@@ -75,9 +76,9 @@ public class produit implements Serializable {
     }
 
     /**
-     * Met à jour le statut de terminé du produit.
-     * Si le produit est marqué comme terminé, toutes les compétences sont marquées comme réalisées.
-     * @param done Nouveau statut de terminé.
+     * Met à jour le statut de réparation du véhicule.
+     * Si le véhicule est marqué comme réparé, toutes les compétences sont marquées comme réalisées.
+     * @param done Nouveau statut de réparé.
      */
     public void setDone(boolean done) {
         this.done = done;
@@ -89,7 +90,7 @@ public class produit implements Serializable {
     }
 
     /**
-     * Retourne la liste des compétences nécessaires au produit.
+     * Retourne la liste des compétences nécessaires au véhicule.
      * @return HashMap contenant les compétences et leur statut.
      */
     public HashMap<String, Boolean> getSkills() {
@@ -97,7 +98,7 @@ public class produit implements Serializable {
     }
 
     /**
-     * Met à jour la liste des compétences du produit.
+     * Met à jour la liste des compétences du véhicule.
      * @param skills Nouvelle liste des compétences avec leurs statuts.
      */
     public void setSkills(HashMap<String, Boolean> skills) {
@@ -105,27 +106,26 @@ public class produit implements Serializable {
     }
 
     /**
-     * Retourne le nom du produit.
-     * @return Nom du produit.
+     * Retourne le nom du véhicule.
+     * @return Nom du véhicule.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Met à jour le nom du produit.
-     * @param name Nouveau nom du produit.
+     * Met à jour le nom du véhicule.
+     * @param name Nouveau nom du véhicule.
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * Marque une compétence comme réalisée pour ce produit.
+     * Marque une compétence comme réalisée pour ce véhicule.
      * @param skill La compétence à marquer comme réalisée.
      */
     public void finishSkill(String skill) {
         this.skills.put(skill, true);
     }
 }
-

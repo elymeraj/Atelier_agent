@@ -14,22 +14,21 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Classe représentant un agent robot.
- * Les robots possèdent des compétences et traitent des produits envoyés par l'atelier.
+ * Classe représentant un agent mécanicien.
+ * Les mécaniciens possèdent des compétences et réparent les véhicules envoyés par l'atelier.
  */
-
 public class robot extends Agent {
-    /** Ensemble des compétences avec leur niveau associé. */
-    private HashMap<String, Float> competences; 
+    /** Compétences du mécanicien avec leur niveau associé. */
+    private HashMap<String, Float> competences;
 
-    /** Liste des produits en attente de traitement. */
-    private List<produit> produits; 
-    
+    /** Liste des véhicules en attente de réparation. */
+    private List<produit> produits;
+
     /** Temps nécessaire pour exécuter une compétence. */
-    private double time; 
+    private double time;
 
     /**
-     * Retourne l'ensemble des compétences du robot.
+     * Retourne l'ensemble des compétences du mécanicien.
      * @return Un dictionnaire contenant les compétences et leur niveau associé.
      */
     public HashMap<String, Float> getCompetences() {
@@ -37,7 +36,7 @@ public class robot extends Agent {
     }
 
     /**
-     * Définit les compétences du robot.
+     * Définit les compétences du mécanicien.
      * @param competences Un dictionnaire contenant les compétences et leur niveau associé.
      */
     public void setCompetences(HashMap<String, Float> competences) {
@@ -45,43 +44,54 @@ public class robot extends Agent {
     }
 
     /**
-     * Retourne la liste des produits en attente de traitement par le robot.
-     * @return Une liste de produits.
+     * Retourne la liste des véhicules en attente de réparation.
+     * @return Une liste de véhicules.
      */
     public List<produit> getProduits() {
         return produits;
     }
 
     /**
-     * Définit la liste des produits à traiter par le robot.
-     * @param produits Une liste de produits.
+     * Définit la liste des véhicules à réparer.
+     * @param produits Une liste de véhicules.
      */
     public void setProduits(List<produit> produits) {
         this.produits = produits;
     }
 
     /**
-     * Méthode d'initialisation de l'agent robot
+     * Méthode d'initialisation de l'agent mécanicien.
      */
     protected void setup() {
         System.out.println("Bienvenue ! L'agent " + getAID().getName() + " est prêt.");
-
+    
         // Temps nécessaire pour chaque compétence
         this.time = 500.0;
-
+    
         // Définir les compétences disponibles directement dans le code
-        List<String> allCompetences = List.of("souder", "peindre", "couper");
+        List<String> allCompetences = List.of("souder", "peindre", "diagnostiquer");
         this.produits = new ArrayList<>();
-
+    
         // Attribution aléatoire des compétences au robot
         this.competences = new HashMap<>();
+        boolean hasCompetence = false;
+    
         for (String comp : allCompetences) {
             if (Math.random() > 0.5) { // 50% de chance d'avoir chaque compétence
                 this.competences.put(comp, (float) Math.random());
+                hasCompetence = true;
             }
         }
-        System.out.println("Compétences du robot " + this.getAID().getLocalName() + " : " + this.competences);
-
+    
+        // Si aucune compétence n'a été attribuée, attribuer une compétence par défaut
+        if (!hasCompetence) {
+            String defaultCompetence = allCompetences.get((int) (Math.random() * allCompetences.size()));
+            this.competences.put(defaultCompetence, (float) Math.random());
+            System.out.println("Le mécanicien " + this.getAID().getLocalName() + " n'avait pas de compétence, il reçoit : " + defaultCompetence);
+        }
+    
+        System.out.println("Compétences du mécanicien " + this.getAID().getLocalName() + " : " + this.competences);
+    
         // Enregistrement des compétences dans le DF (Directory Facilitator)
         DFAgentDescription template = new DFAgentDescription();
         for (String comp : competences.keySet()) {
@@ -95,14 +105,15 @@ public class robot extends Agent {
         } catch (FIPAException e) {
             throw new RuntimeException("Erreur lors de l'enregistrement des compétences : " + e.getMessage());
         }
-
+    
         // Ajout des comportements de l'agent
         this.addBehaviour(new acceptMessage());
         this.addBehaviour(new applySkills(this, 1000));
     }
+    
 
     /**
-     * Comportement pour appliquer des compétences sur les produits
+     * Comportement pour appliquer des compétences sur les véhicules.
      */
     private class applySkills extends TickerBehaviour {
         public applySkills(Agent a, long period) {
@@ -118,19 +129,19 @@ public class robot extends Agent {
                         continue;
                     }
                     if (competences.containsKey(comp)) {
-                        System.out.println("L'agent " + getAID().getName() + " traite la compétence " + comp + " pour le produit " + p.getName());
+                        System.out.println("L'agent " + getAID().getName() + " répare la compétence " + comp + " pour le véhicule " + p.getName());
                         try {
                             Thread.sleep((long) (time * (1 - competences.get(comp))));
                         } catch (InterruptedException e) {
-                            throw new RuntimeException("Erreur pendant le traitement : " + e.getMessage());
+                            throw new RuntimeException("Erreur pendant la réparation : " + e.getMessage());
                         }
                         p.finishSkill(comp);
                     }
                 }
                 if (p.isDone()) {
-                    System.out.println("L'agent " + getAID().getName() + " a terminé le produit " + p.getName());
+                    System.out.println("L'agent " + getAID().getName() + " a terminé la réparation du véhicule " + p.getName());
                 } else {
-                    System.out.println("L'agent " + getAID().getName() + " a partiellement terminé le produit " + p.getName());
+                    System.out.println("L'agent " + getAID().getName() + " a partiellement réparé le véhicule " + p.getName());
                 }
 
                 ACLMessage message = new ACLMessage(ACLMessage.INFORM);
@@ -138,17 +149,17 @@ public class robot extends Agent {
                 try {
                     message.setContentObject(p);
                 } catch (IOException e) {
-                    throw new RuntimeException("Erreur lors de l'envoi du produit : " + e.getMessage());
+                    throw new RuntimeException("Erreur lors de l'envoi du véhicule : " + e.getMessage());
                 }
                 send(message);
                 produits.remove(0);
-                System.out.println("L'agent " + getAID().getName() + " a envoyé le produit " + p.getName() + " à l'atelier.");
+                System.out.println("L'agent " + getAID().getName() + " a envoyé le véhicule " + p.getName() + " à l'atelier.");
             }
         }
     }
 
     /**
-     * Comportement pour recevoir des messages d'autres agents
+     * Comportement pour recevoir des messages d'autres agents.
      */
     private class acceptMessage extends CyclicBehaviour {
         @Override
@@ -157,7 +168,7 @@ public class robot extends Agent {
             if (msg != null) {
                 System.out.println("L'agent " + getAID().getName() + " a reçu un message de " + msg.getSender().getName());
                 if (produits.size() >= 3) {
-                    System.out.println("L'agent " + getAID().getName() + " a atteint la limite de produits qu'il peut traiter.");
+                    System.out.println("L'agent " + getAID().getName() + " a atteint la limite de véhicules qu'il peut traiter.");
                     produit p;
                     try {
                         p = (produit) msg.getContentObject();
@@ -189,9 +200,10 @@ public class robot extends Agent {
     }
 
     /**
-     * Actions à exécuter avant la terminaison de l'agent
+     * Actions à exécuter avant la terminaison de l'agent.
      */
     protected void takeDown() {
         System.out.println("L'agent " + getAID().getName() + " termine son exécution.");
     }
 }
+
