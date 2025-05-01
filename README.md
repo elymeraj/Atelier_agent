@@ -1,4 +1,4 @@
-# Project – Multi-Agent System
+# Project – Multi-Agent System (English)
 
 ### Author
 - ***Eldis YMERAJ***
@@ -6,7 +6,7 @@
 
 ---
 
-## Project Description (English)
+## Project Description 
 Implementation of a multi-agent system using the JADE library to simulate a production workshop.
 
 ## Project Structure
@@ -19,7 +19,7 @@ mkdir build doc
 javac -cp ".:lib/jade.jar" -d build src/*.java
 javadoc -d doc -sourcepath src -classpath "lib/jade.jar" src/*.java
 java -cp ".:lib/jade.jar:build" Main
-
+```
 ## Remove Compiled Files and Documentation
 ```bash
    rm -rf build doc
@@ -27,13 +27,13 @@ java -cp ".:lib/jade.jar:build" Main
 ```
 
 ---
-# Projet - Système Multi-Agents
+# Projet - Système Multi-Agents (Français)
 ### Auteur
 - ***Eldis YMERAJ***
 - `22408331`
 
-
-## Description du projet (Français)
+---
+## Description du projet 
 Implémentation d'un système multi-agent avec la bibliothèque JADE pour simuler un atelier de production.
 
 ## Structure du Projet
